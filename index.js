@@ -1,4 +1,3 @@
-
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -28,7 +27,7 @@ const contactSchema = new mongoose.Schema({
 
 const Contact = mongoose.model('Contact', contactSchema);
 
-// API route
+// API route to save contact
 app.post('/api/contact', async (req, res) => {
   try {
     const contact = new Contact(req.body);
@@ -37,6 +36,16 @@ app.post('/api/contact', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error saving contact form' });
+  }
+});
+
+// ✅ New route to test DB connection
+app.get('/test-db', async (req, res) => {
+  try {
+    const count = await mongoose.connection.db.collection('contacts').countDocuments();
+    res.json({ message: 'MongoDB connected ✅', totalContacts: count });
+  } catch (err) {
+    res.status(500).json({ message: 'MongoDB not connected ❌', error: err.message });
   }
 });
 
