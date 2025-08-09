@@ -40,12 +40,13 @@ app.post('/api/contact', async (req, res) => {
 });
 
 // ✅ New route to test DB connection
-app.get('/test-db', async (req, res) => {
+app.get('/api/contact', async (req, res) => {
   try {
-    const count = await mongoose.connection.db.collection('contacts').countDocuments();
-    res.json({ message: 'MongoDB connected ✅', totalContacts: count });
+    const contacts = await Contact.find().sort({ createdAt: -1 }); // latest first
+    res.json(contacts);
   } catch (err) {
-    res.status(500).json({ message: 'MongoDB not connected ❌', error: err.message });
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching contacts' });
   }
 });
 
